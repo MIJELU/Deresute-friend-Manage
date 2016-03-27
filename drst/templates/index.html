@@ -1,1 +1,12 @@
-<h1> 데레마스 친구코드 관리 </h1>
+{% extends "layout.html" %}
+{% block content %}
+  <h1> 데레마스 친구코드 관리 </h1>
+  <p>환영합니다.</p>
+  <fieldset>
+    <legend>메뉴</legend>
+    <form>
+      <input type="number" placeholder="친구코드 입력">
+      <button>Sign UP / IN</button>
+    </form>
+  </fieldset>
+{% endblock %}
