@@ -5,7 +5,7 @@ class Group_members(db.Model):
     __tablename__ = "group_members"
 
     friend_code = db.Column(db.String(9), primary_key=True)
-    group_url = db.Column(db.String(128))
+    group_url = db.Column(db.String(128), db.ForeignKey('groups.group_url'))
 
     def __init__(self, friend_code, group_url):
         self.friend_code = friend_code
