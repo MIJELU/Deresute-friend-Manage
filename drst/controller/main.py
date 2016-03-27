@@ -24,6 +24,6 @@ def new_group():
 @drst.route("/g/list/<string:group_url>")
 def group_list(group_url):
     page = request.args.get('page')
-    if(page is None or page < 1):
+    if(page is None or not (page > 1)):
         page = 1
-    return "group_list : " + group_url + "<br>Page : " + request.args.get('page')
+    return "group_list : " + group_url + "<br>Page : " + page

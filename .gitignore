@@ -63,3 +63,6 @@ target/
 
 #Virtual Environment Settings
 venv/
+
+#database file
+drst.db

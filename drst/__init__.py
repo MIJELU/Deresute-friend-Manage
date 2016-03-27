@@ -6,6 +6,9 @@ from drst.controller import *
 def create_app():
     #App Init
     app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./drst.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
 
     #DB Init
     DBManager.init(app)
