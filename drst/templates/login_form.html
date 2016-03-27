@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}로그인 - 데레마스 친구코드 관리{% endblock %}
+{% block content %}
+
+    <div class="container">
+      <h2>로그인이 필요합니다.</h2>
+      <p> for {{ redirect_url }}</p>
+      <form>
+        <input type="number" name="friend_code" class="form-control" placeholder="친구코드" onkeypress='return event.charCode >= 48 && event.charCode <= 57' autofocus>
+        <input type="password" name="password_plain" class="form-control" placeholder="비밀번호">
+        <input type="submit" value="로그인" class="form-control">
+      </form>
+    </div>
+
+<!--
+<div class="container">
+      <form class="form-signin">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+    </div>
+  -->
+{% endblock %}
