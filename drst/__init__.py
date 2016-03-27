@@ -9,6 +9,10 @@ def create_app():
 
     #DB Init
     DBManager.init(app)
+    with app.app_context():
+        from drst.model import initModels
+        initModels()
+    DBManager.init_db()
 
     #청사진 등록
     app.register_blueprint(drst)
