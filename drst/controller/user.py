@@ -10,8 +10,11 @@ import hashlib
 def page_login():
     if request.method == 'GET':
         if 'friend_code' in session:
-            return redirect(url_for('page_index'))
-        return render_template('login_form.html', redirect_url="/")
+            return redirect(url_for('drst.page_index'))
+        redirect_url = request.args.get('redirect')
+        if(redirect_url is None):
+            redirect_url = "/"
+        return render_template('login_form.html', redirect_url=redirect_url) #아직은 그냥 슬래시
     else:
         from drst.database import db
         from drst.model import members
@@ -19,17 +22,24 @@ def page_login():
         #from drst.model import group_members
         #이때쯤 해줘야 none Type 에러가 나지 않는다.
         friend_code = request.form.get('friend_code')
+        password_plain = request.form.get('password_plain')
+        password_plain = password_plain.encode('utf-8')
+        password_sha256 = hashlib.sha256(password_plain).hexdigest()
         result = db.session.query(members.Members).filter_by(friend_code = friend_code).first()
-        print("로그인 시도 ID : " + result.friend_code)
-                #self.email = email
-                #self.friend_code = friend_code
-                #self.password = password
-        return redirect(url_for('drst.page_index')) #로그인 처리
+        if(result != None):
+            print("로그인 시도 ID : " + result.friend_code)
+            if(password_sha256 == result.password):
+                #세션에 등록
+                session['email'] = result.email
+                session['friend_code'] = result.friend_code
+                return redirect(request.form.get('redirect_url')) #로그인 처리
+        return redirect(url_for('drst.page_login')) #로그인 실패
 
 @drst.route("/logout")
 def page_logout():
-    session.pop('', )
-    return "logout"
+    session.pop('email')
+    session.pop('friend_code')
+    return redirect(url_for('drst.page_index'))
 
 @drst.route("/join", methods=['GET', 'POST'])
 def page_join():
