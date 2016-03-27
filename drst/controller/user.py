@@ -45,7 +45,7 @@ def page_logout():
 def page_join():
     if request.method == 'GET':
         if 'friend_code' in session:
-            return redirect(url_for('page_index'))
+            return redirect(url_for('drst.page_index'))
         return render_template('join_form.html')
     else:
         from drst.database import db
