@@ -1,11 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 from drst import create_app
-#import hashlib
-#######################################
-
-#print(hashlib.sha256(b"test").hexdigest())
-#######################################
 
 app = create_app()
 
