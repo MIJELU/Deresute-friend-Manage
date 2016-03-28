@@ -14,7 +14,7 @@ def page_login():
         redirect_url = request.args.get('redirect')
         if(redirect_url is None):
             redirect_url = "/"
-        return render_template('login_form.html', redirect_url=redirect_url) #아직은 그냥 슬래시
+        return render_template('login_form.html', redirect_url=redirect_url)
     else:
         from drst.database import db
         from drst.model import members
@@ -58,11 +58,3 @@ def page_join():
         db.session.add(post)
         db.session.commit()
         return redirect(url_for('drst.page_index'))
-
-"""
-<input type="number" name="friend_code" class="form-control" maxlength="9" placeholder="ゲームIDを入力" onkeypress='return event.charCode >= 48 && event.charCode <= 57' autofocus>
-<input type="email" name="email" class="form-control" placeholder="이메일 주소">
-<input type="password" name="password_plain" class="form-control" placeholder="등록 비밀번호">
-<input type="password" name="password_plain_re" class="form-control" placeholder="비밀번호 재입력">
-<input type="submit" value="회원가입" class="form-control">
-"""
