@@ -12,9 +12,9 @@
 
 
   {% else %}
-  <h2>환영합니다. <a href="/login">로그인</a> | <a href="/join">회원가입</a></h2>
-    <form onsubmit="login()">
-      <input type="text" name="user_input" class="form-control" placeholder="친구코드/이메일 입력" autofocus>
+  <h2>환영합니다.</h2>
+    <form id="login">
+      <input type="text" name="user_input" class="loginF form-control" placeholder="친구코드/이메일 입력" autofocus>
       <button class="form-control btn-info">Sign UP / IN</button>
     </form>
     {% endif %}
@@ -23,6 +23,49 @@
     function login() {
       alert('jQuery call');
     }
+    $('#login').submit(function(e) {
+      e.preventDefault();
+      var values = $(this).serialize();
+      $.ajax({
+        url : '/api/v1.1/checkValidValue',
+        type: 'POST',
+        data: values,
+        success: function(data, status, xhr) {
+          if(data.isValid) {
+            if(data.type == 'friend_code' || data.type == 'email') {
+              var vv = $('.loginF').val();
+              // /api/v1.1/checkJoin -> 가입 여부 조회
+              $.ajax({
+                url : '/api/v1.1/checkJoin',
+                type: 'POST',
+                data: data,
+                success: function(data2, status2, xhr2) {
+                  if(data2.isJoin) {
+
+                  //로그인의 경우(가입 되어 있음)
+                  //setTimeout("location.href='/login?type="+data.type+"&fill=" +vv+ "'", 0);
+                  setTimeout("location.href='/login?type=friend_code&fill=" +data2.friend_code+ "'", 0);
+                  //걍 컨버팅해서 보내줌
+                  } else {
+                    alert('가입 페이지로');
+                  }
+                },
+                error: function(xhr2, status2, err2) {
+                  alert('서버가 불안정합니다.');
+                }
+              });
+            } else {
+              alert('[-3] 정의되지 않은 에러');
+            }
+          } else {
+            alert('올바르지 않은 정보입니다.');
+          }
+        },
+        error: function(xhr, status, err) {
+          alert('서버가 불안정합니다.');
+        }
+      });
+});
       var clipboard = new Clipboard('.copy_friend_code');
       clipboard.on('success', function(e) {
         $('.copy_friend_code').append('<span style="color:#ffc299;font-size:0.5em;">Copied!</span>');

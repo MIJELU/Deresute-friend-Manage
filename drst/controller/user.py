@@ -16,7 +16,15 @@ def page_login():
         redirect_url = request.args.get('redirect')
         if(redirect_url is None):
             redirect_url = "/"
-        return render_template('login_form.html', redirect_url=redirect_url)
+        fill = request.args.get('fill')
+        login_type = request.args.get('type')
+        if(login_type is None):
+            return ">_<"
+        if(fill is not None):
+            print("호출")
+            return render_template('login_form.html', redirect_url=redirect_url, fill=fill, login_type=login_type)
+        else:
+            return render_template('login_form.html', redirect_url=redirect_url, fill=None, login_type=login_type)
     else:
         from drst.database import db
         from drst.model import members

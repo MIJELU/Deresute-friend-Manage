@@ -6,9 +6,15 @@
       <h2>로그인이 필요합니다.</h2>
       <p> for {{ redirect_url }}</p>
       <form method="post">
+        <input type="hidden" name="login_type" value="{{ login_type }}">
         <input type="hidden" name="redirect_url" value="{{ redirect_url }}">
-        <input type="number" name="friend_code" class="form-control" placeholder="친구코드" onkeypress='return event.charCode >= 48 && event.charCode <= 57' autofocus>
+        {% if fill  %}
+        <input type="text" name="friend_code" class="form-control" placeholder="친구코드/이메일" value="{{ fill }}" readonly>
+        <input type="password" name="password_plain" class="form-control" placeholder="비밀번호" autofocus>
+        {% else %}
+        <input type="text" name="friend_code" class="form-control" placeholder="친구코드/이메일" autofocus readonly>
         <input type="password" name="password_plain" class="form-control" placeholder="비밀번호">
+        {% endif %}
         <input type="submit" value="로그인" class="form-control">
       </form>
     </div>
