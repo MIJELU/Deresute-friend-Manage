@@ -9,7 +9,13 @@
   <div>
     여기에 그룹 목록이 나타납니다.
   </div>
-
+  <script>
+  var clipboard = new Clipboard('.copy_friend_code');
+  clipboard.on('success', function(e) {
+    $('.copy_friend_code').append('<span style="color:#ffc299;font-size:0.5em;">Copied!</span>');
+    e.clearSelection();
+});
+</script>
 
   {% else %}
   <h2>환영합니다.</h2>
@@ -17,7 +23,6 @@
       <input type="text" name="user_input" class="loginF form-control" placeholder="친구코드/이메일 입력" autofocus>
       <button class="form-control btn-info">Sign UP / IN</button>
     </form>
-    {% endif %}
 
     <script>
     function login() {
@@ -66,10 +71,7 @@
         }
       });
 });
-      var clipboard = new Clipboard('.copy_friend_code');
-      clipboard.on('success', function(e) {
-        $('.copy_friend_code').append('<span style="color:#ffc299;font-size:0.5em;">Copied!</span>');
-        e.clearSelection();
-});
     </script>
+
+{% endif %}
 {% endblock %}
