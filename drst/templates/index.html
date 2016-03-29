@@ -2,21 +2,27 @@
 {% block title %}데레마스 친구코드 관리{% endblock %}
 {% block content %}
   <h1> 데레마스 친구코드 관리 </h1>
-  {% if user != False %}
+  {% if isLogin != False %}
   <div style="width:450px;margin:0 auto;">
     <h2><img class="img-circle" alt="Profile Image" title="{{ user.email }}" src="http://www.gravatar.com/avatar/{{ user.email_hash }}"> &nbsp; <span class="copy_friend_code" style="cursor:pointer;" data-clipboard-text="{{ user.friend_code }}">{{ user.friend_code }}</span> <a href="/logout">로그아웃</a></h2>
   </div>
+  <div>
+    여기에 그룹 목록이 나타납니다.
+  </div>
+
+
   {% else %}
   <h2>환영합니다. <a href="/login">로그인</a> | <a href="/join">회원가입</a></h2>
-  {% endif %}
-    <form> <!--로그인 안했을때 나오는 것들 -->
-      <input type="radio" name="login_type" id="friend_code" value="friend_code" checked><label for="friend_code">&nbsp; 친구코드</label>
-      &nbsp;&nbsp;&nbsp;
-      <input type="radio" name="login_type" id="email" value="email"><label for="email">&nbsp; 이메일</label>
-      <input type="text" class="form-control" placeholder="친구코드/이메일 입력">
+    <form onsubmit="login()">
+      <input type="text" name="user_input" class="form-control" placeholder="친구코드/이메일 입력" autofocus>
       <button class="form-control btn-info">Sign UP / IN</button>
     </form>
+    {% endif %}
+
     <script>
+    function login() {
+      alert('jQuery call');
+    }
       var clipboard = new Clipboard('.copy_friend_code');
       clipboard.on('success', function(e) {
         $('.copy_friend_code').append('<span style="color:#ffc299;font-size:0.5em;">Copied!</span>');

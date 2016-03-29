@@ -6,6 +6,8 @@ import hashlib
 #세션에 이메일, 친구코드
 #if 'email' in session:
 #if 'friend_code' in session:
+
+
 @drst.route("/login", methods=['GET', 'POST'])
 def page_login():
     if request.method == 'GET':
