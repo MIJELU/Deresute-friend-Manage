@@ -3,24 +3,6 @@ from drst.blueprint import drst
 import hashlib
 #세션에 이메일, 친구코드
 
-def print_tree(rows):
-    def get_level_diff(row1, row2):
-        """ Returns tuple: (from, to) of different item positions.  """
-        if row1 is None: # first row handling
-            return (0, len(row2))
-        assert len(row1) == len(row2)
-        for col in range(len(row1)):
-            if row1[col] != row2[col]:
-                return (col, len(row2))
-        assert False, "should not have duplicates"
-
-    prev_row = None
-    for row in rows:
-        level = get_level_diff(prev_row, row)
-        for l in range(*level):
-            print (2 * l * " ", row[l])
-            prev_row = row
-
 @drst.route("/")
 def page_index():
     isLogin = False
