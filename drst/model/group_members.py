@@ -4,7 +4,9 @@ from drst.database import db
 class Group_members(db.Model):
     __tablename__ = "group_members"
 
-    friend_code = db.Column(db.String(9), primary_key=True)
+    #friend_code = db.Column(db.String(9), primary_key=True)
+    nid = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    friend_code = db.Column(db.String(9))
     group_url = db.Column(db.String(128), db.ForeignKey('groups.group_url'))
 
     def __init__(self, friend_code, group_url):
