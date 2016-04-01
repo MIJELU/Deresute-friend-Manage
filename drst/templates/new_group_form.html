@@ -7,11 +7,10 @@
       <form method="post">
 
         <input type="text" name="group_name" class="form-control" placeholder="그룹 이름" autofocus >
-        <div class="input-group">
-          <span class="input-group-addon" id="urlAddon">/g/list/</span>
-          <input type="text" name="group_url" class="form-control" placeholder="그룹 URL" value="{{ genurl }}" readonly aria-describedby="urlAddon">
-        </div>
-        <input type="submit" value="그룹 생성하기" class="form-control">
+        <div id="urlAddon">/g/list/</div>
+        <input type="text" name="group_url" class="form-control" placeholder="그룹 URL" value="{{ genurl }}" readonly aria-describedby="urlAddon">
+        <em>* 그룹 URL은 중복 등의 이유로 이대로 생성되지 않을 가능성이 높으므로, 생성하시고 나서 주소창을 꼭 확인해 주세요.</em>
+        <input type="submit" value="그룹 생성하기" class="form-control btn btn-warning">
       </form>
     </div>
     <script>
@@ -19,7 +18,7 @@
       var url = window.location.href;
       var arr = url.split("/");
       var result = arr[0] + "//" + arr[2];
-      $("#urlAddon").text("그룹 URL : " + result+"/g/list/");
+      $("#urlAddon").text("그룹 URL (예상) : " + result+"/g/list/");
     });
     </script>
 {% endblock %}

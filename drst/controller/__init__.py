@@ -1,1 +1,1 @@
-__all__ = ["main", "user", "api"]
+__all__ = ["main", "user", "api", "group"]
