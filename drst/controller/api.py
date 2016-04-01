@@ -5,8 +5,11 @@ import json
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 
+@drst.route("/api/v1.1/checkEmail" ,methods=['POST'])
+def api_checkEmail():
+    return ""
 
-@drst.route("/api/v1.1/checkJoin", methods=['GET', 'POST'])
+@drst.route("/api/v1.1/checkJoin", methods=['POST'])
 def api_checkJoin():
     #지정된 이메일이나 친구코드가 이미 가입되어있는지 아닌지 조회
     #가입된 이메일이면 친구코드로 컨버팅해서 로그인으로 넘겨줘야 겠다 ㅡㅡ (너무 복잡해용 ㅠㅠ)

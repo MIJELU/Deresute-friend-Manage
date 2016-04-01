@@ -5,9 +5,21 @@
     <div class="container">
       <h2>그룹 생성</h2>
       <form method="post">
-        <input type="text" name="group_name" class="form-control" placeholder="그룹 이름">
-        <input type="text" name="group_url" class="form-control" placeholder="그룹 URL">
+
+        <input type="text" name="group_name" class="form-control" placeholder="그룹 이름" autofocus >
+        <div class="input-group">
+          <span class="input-group-addon" id="urlAddon">/g/list/</span>
+          <input type="text" name="group_url" class="form-control" placeholder="그룹 URL" value="{{ genurl }}" readonly aria-describedby="urlAddon">
+        </div>
         <input type="submit" value="그룹 생성하기" class="form-control">
       </form>
     </div>
+    <script>
+    $(document).ready(function(){
+      var url = window.location.href;
+      var arr = url.split("/");
+      var result = arr[0] + "//" + arr[2];
+      $("#urlAddon").text("그룹 URL : " + result+"/g/list/");
+    });
+    </script>
 {% endblock %}

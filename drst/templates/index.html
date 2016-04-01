@@ -7,6 +7,7 @@
     <h2><img class="img-circle" alt="Profile Image" title="{{ user.email }}" src="http://www.gravatar.com/avatar/{{ user.email_hash }}"> &nbsp; <span class="copy_friend_code" style="cursor:pointer;" data-clipboard-text="{{ user.friend_code }}">{{ user.friend_code }}</span> <a href="/logout">로그아웃</a></h2>
   </div>
   <div>
+    <a href="/g/new"><button class="form-control btn btn-info" style="float:right;">새 그룹 추가</button></a>
     여기에 그룹 목록이 나타납니다.
   </div>
   <script>
@@ -25,9 +26,6 @@
     </form>
 
     <script>
-    function login() {
-      alert('jQuery call');
-    }
     $('#login').submit(function(e) {
       e.preventDefault();
       var values = $(this).serialize();
@@ -52,8 +50,8 @@
                   setTimeout("location.href='/login?type=friend_code&fill=" +data2.friend_code+ "'", 0);
                   //걍 컨버팅해서 보내줌
                   } else {
-                    alert('가입 페이지로');
-                    setTimeout("location.href='/join'", 0);
+                    //alert(data.type);
+                    setTimeout("location.href='/join?type="+data.type +"&fill="+vv+"'", 0);
                   }
                 },
                 error: function(xhr2, status2, err2) {

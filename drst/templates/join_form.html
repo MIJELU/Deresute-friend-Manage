@@ -1,15 +1,31 @@
 {% extends "layout.html" %}
 {% block title %}가입 - 데레마스 친구코드 관리{% endblock %}
 {% block content %}
-
+    <!--fill, fill_type --->
     <div class="container">
       <h2>회원가입 폼</h2>
-      <form method="post">
-        <input type="number" name="friend_code" class="form-control" maxlength="9" placeholder="ゲームIDを入力" onkeypress='return event.charCode >= 48 && event.charCode <= 57' autofocus>
-        <input type="email" name="email" class="form-control" placeholder="이메일 주소">
+      <form method="post" id="joinForm">
+        {% if fill_type == "friend_code" %}
+        <input type="number" name="friend_code" class="form-control" placeholder="친구코드(본인의 게임 아이디) 입력" value="{{ fill }}" readonly>
+        {% else %}
+        <input type="number" name="friend_code" class="form-control" placeholder="친구코드(본인의 게임 아이디) 입력" autofocus>
+        {% endif %}
+
+        {% if fill_type == "email" %}
+        <input type="email" name="email" class="form-control" placeholder="이메일 주소" value="{{ fill }}" readonly>
+        {% else %}
+        <input type="email" name="email" class="form-control" placeholder="이메일 주소" autofocus>
+        {% endif %}
         <input type="password" name="password_plain" class="form-control" placeholder="등록 비밀번호">
         <input type="password" name="password_plain_re" class="form-control" placeholder="비밀번호 재입력">
         <input type="submit" value="회원가입" class="form-control">
+        <!--회원가입 시 친구코드는 꼭 검증 -->
       </form>
     </div>
+    <script>
+    $('#joinForm').submit(function(e) {
+      e.preventDefault();
+      alert("가입 대기중");
+    }
+    </script>
 {% endblock %}
