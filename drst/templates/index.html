@@ -9,6 +9,9 @@
   <div>
     <a href="/g/new"><button class="form-control btn btn-info" style="float:right;">새 그룹 추가</button></a>
     여기에 그룹 목록이 나타납니다.
+    {%- for group in groups %}
+      <h2><a href="/g/list/{{ group.group_url }}">{{ group.group_url }}</a></h2>
+    {% endfor %}
   </div>
   <script>
   var clipboard = new Clipboard('.copy_friend_code');

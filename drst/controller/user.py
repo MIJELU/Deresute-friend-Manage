@@ -5,7 +5,8 @@ import hashlib
 import json
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
-
+import datetime
+import urllib.request
 #세션에 이메일, 친구코드
 #if 'email' in session:
 #if 'friend_code' in session:
@@ -126,7 +127,8 @@ def page_join():
             encoding = response.info().get_content_charset('utf8')
             data = json.loads(response.read().decode(encoding))
             print(data['prp'])
-            post = friend_code_cache.Friend_code_cache(data['id'], data['name'], data['level'], data['prp'], data['comment'])
+            post = friend_code_cache.Friend_code_cache(data['id'], data['name'], data['level'], data['prp'], data['comment'], datetime.datetime.now())
+            urllib.request.urlretrieve("https://deresute.me/"+str(data['id'])+"/medium", "drst/static/i/user/"+str(data['id'])+".png")
             db.session.add(post)
             db.session.commit()
             ###############
