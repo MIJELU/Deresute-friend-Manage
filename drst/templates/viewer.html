@@ -6,6 +6,11 @@
     <input type="submit" class="form-control btn-info" value="이 그룹에 가입">
   </form>
   {%- for group_member in group_members %}
-      {{ group_member.friend_code }} - {{ group_member.email }} <br>
+      <div class="member" style="width:540px; margin:0 auto;text-align:center;margin-top:50px;">
+        <div class="api">
+          <img src="/api/v1.1/producer/{{group_member.friend_code}}" width="540" height="82" alt="{{group_member.friend_code}}" title="{{group_member.friend_code}}">
+        </div>
+        {{ group_member.friend_code }} - {{ group_member.email }}
+      </div>
   {% endfor %}
 {% endblock %}

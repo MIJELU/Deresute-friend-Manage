@@ -30,14 +30,25 @@ def page_new_group():
             from drst.database import db
             from drst.model import groups
             from drst.model import group_members
-            #이때쯤 해줘야 none Type 에러가 나지 않는다.
-            #self, friend_code, group_name, group_url):
-            post = group_members.Group_members(session['friend_code'], request.form.get('group_url'))
-            post2 = groups.Groups(request.form.get('group_url'), request.form.get('group_name'))
+
+            group_name = request.form.get('group_name').strip()
+            if(len(group_name) < 2) :
+                return "그룹 이름이 너무 짧아요!"
+            group_url = request.form.get('group_url').strip()
+            #만약 위에 게 중복되었다면, URL을 생성
+            check_duplicate_group_url = db.session.query(groups.Groups).filter_by(group_url = group_url).first()
+            while(check_duplicate_group_url != None):
+                urlLength = 10
+                urlLetters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-'
+                group_url = random_string(urlLength, urlLetters)
+                check_duplicate_group_url = db.session.query(groups.Groups).filter_by(group_url = group_url).first()
+
+            post = group_members.Group_members(session['friend_code'], group_url)
+            post2 = groups.Groups(group_url, group_name)
             db.session.add(post)
             db.session.add(post2)
             db.session.commit()
-            return redirect(url_for('drst.page_group_list', group_url=request.form.get('group_url')))
+            return redirect(url_for('drst.page_group_list', group_url=group_url))
         else:
             return redirect(url_for('drst.page_login', redirect="/g/new"))
 

@@ -1,13 +1,67 @@
-from flask import request, redirect, render_template, session, escape, url_for, Response
+from flask import request, redirect, render_template, session, escape, url_for, Response, send_file
 from drst.blueprint import drst
 from validate_email import validate_email
 import json
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
+import os.path
+import datetime
+import urllib.request
 
-@drst.route("/api/v1.1/checkEmail" ,methods=['POST'])
-def api_checkEmail():
-    return ""
+@drst.route("/api/v1.1/producer/<string:friend_code>" ,methods=['GET'])
+def api_get_producer_status(friend_code):
+    '''타입 : 이미지와 json
+    #캐시 생성 이슈
+    #friend_code_cache와 타임스탬프가 1시간 이상 차이 나면 다시 만들어 준다
+    #그리고 friend_code_cache의 타임스탬프를 최신 정보로 고친다.
+
+    a = dt.datetime(2013,12,30,23,59,59)
+    b = dt.datetime(2013,12,31,23,59,59)
+
+    (b-a).total_seconds()
+    '''
+    from drst.database import db
+    from drst.model import friend_code_cache
+
+    #1. 지금 타임스탬프 구하기
+    now = datetime.datetime.now()
+    #2. db에 저장되어 있는 타임스탬프 구하기
+    dbtime = db.session.query(friend_code_cache.Friend_code_cache).filter_by(friend_code = friend_code).first()
+    print(dbtime)
+    dbtime2 = ""
+    diff = 9999.99
+    if(dbtime):
+        dbtime2 = dbtime.last_modified
+        diff = (now-dbtime2).total_seconds() / 86400 #시간
+
+    if(diff < 1.0):
+        return send_file("./static/i/user/"+str(friend_code)+".png", mimetype='image/png')
+    else:
+        #파일을 새로 복사하고 -> db에 갱신작업을 해야한다.
+        #이미지파일 복사 및 새로운 개인정보 저장
+        print("리소스 접근")
+        req = Request("https://deresute.me/"+ str(friend_code) +"/json")
+        try:
+            response = urlopen(req)
+        except HTTPError as e:
+            return "Error"
+        except URLError as e:
+            return "Error"
+        #친구정보 캐시 갱신
+        encoding = response.info().get_content_charset('utf8')
+        data = json.loads(response.read().decode(encoding))
+        if(dbtime):
+            dbtime.name = data['name']
+            dbtime.level = data['level']
+            dbtime.prp = data['prp']
+            dbtime.comment = data['comment']
+            dbtime.last_modified = now #마지막 캐시시간 바꿈
+        else:
+            post = friend_code_cache.Friend_code_cache(data['id'], data['name'], data['level'], data['prp'], data['comment'], now)
+            db.session.add(post)
+        urllib.request.urlretrieve("https://deresute.me/"+str(data['id'])+"/medium", "drst/static/i/user/"+str(data['id'])+".png")
+        db.session.commit()
+        return send_file("./static/i/user/"+str(friend_code)+".png", mimetype='image/png')
 
 @drst.route("/api/v1.1/checkJoin", methods=['POST'])
 def api_checkJoin():
@@ -118,8 +172,10 @@ def api_checkMember():
         from drst.model import friend_code_cache
         encoding = response.info().get_content_charset('utf8')
         data = json.loads(response.read().decode(encoding))
-        print(data['prp'])
-        post = friend_code_cache.Friend_code_cache(data['id'], data['name'], data['level'], data['prp'], data['comment'])
+        post = friend_code_cache.Friend_code_cache(data['id'], data['name'], data['level'], data['prp'], data['comment'], datetime.datetime.now())
+        #여기서 잠깐, 이미지 파일을 본떠야 한다.
+        urllib.request.urlretrieve("https://deresute.me/"+str(data['id'])+"/medium", "drst/static/i/user/"+str(data['id'])+".png")
+
         db.session.add(post)
         db.session.commit()
         return resp
