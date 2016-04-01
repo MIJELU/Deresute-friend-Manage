@@ -6,6 +6,10 @@ import hashlib
 def page_index():
     isLogin = False
     user = {}
+    targetGroup = request.args.get("targetGroupssid")
+    if(targetGroup):
+        print("타겟의등록" + targetGroup)
+        session['targetGroup'] = targetGroup
     if 'friend_code' in session:
         isLogin = True
         email_hash = hashlib.md5(session['email'].encode('utf-8')).hexdigest()

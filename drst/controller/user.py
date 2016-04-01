@@ -22,7 +22,7 @@ def page_login():
         fill = request.args.get('fill')
         login_type = request.args.get('type')
         if(login_type is None):
-            return "로그인 과정 중 문제가 발생한 것 같습니다. 뒤로가기를 누르지 말고 (<a href="/">메인페이지</a>)에서 다시 시도해 주세요 [-2] Invalid Arguments"
+            return "로그인 과정 중 문제가 발생한 것 같습니다. 뒤로가기를 누르지 말고 (<a href='/'>메인페이지</a>)에서 다시 시도해 주세요 [-2] Invalid Arguments"
         if(fill is not None):
             print("호출")
             return render_template('login_form.html', redirect_url=redirect_url, fill=fill, login_type=login_type)
@@ -45,6 +45,10 @@ def page_login():
                 #세션에 등록
                 session['email'] = result.email
                 session['friend_code'] = result.friend_code
+                if('targetGroup' in session):
+                    gourl = session['targetGroup']
+                    session.pop('targetGroup')
+                    return redirect("/g/list/"+gourl)
                 return redirect(request.form.get('redirect_url')) #로그인 처리
         #return redirect(url_for('drst.page_login')) #로그인 실패
         return redirect(request.referrer) #go back your page
@@ -132,4 +136,8 @@ def page_join():
         db.session.commit()
         session['email'] = email
         session['friend_code'] = friend_code
+        if('targetGroup' in session):
+            gourl = session['targetGroup']
+            session.pop('targetGroup')
+            return redirect("/g/list/"+gourl)
         return redirect(url_for('drst.page_index'))
