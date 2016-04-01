@@ -1,8 +1,11 @@
-from flask import request, redirect, render_template, session, escape, url_for
+from flask import request, redirect, render_template, session, escape, url_for, Response
 from drst.blueprint import drst
 import hashlib
 import random
 import string
+import json
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
 
 def random_string(length, letters):
     return ''.join(random.choice(letters) for i in range(length))

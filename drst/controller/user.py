@@ -1,7 +1,10 @@
-from flask import request, redirect, render_template, session, escape, url_for
+from flask import request, redirect, render_template, session, escape, url_for, Response
 from drst.blueprint import drst
 
 import hashlib
+import json
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
 
 #세션에 이메일, 친구코드
 #if 'email' in session:
@@ -86,6 +89,8 @@ def page_join():
         if((check_duplicate_email != None) or (check_duplicate_friend_code != None)):
             return "죄송하지만 중복회원이 있습니다.. 로그인하세요"
 
+        if(password_plain != password_plain_re):
+            return "서로 입력한 패스워드가 상이합니다."
 
         #친구 코드 유효성 검사 (issue :Duplicated Code)
             #9자리 숫자인지 체크

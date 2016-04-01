@@ -1,12 +1,6 @@
-from flask import request, redirect, render_template, session, escape, url_for
+from flask import request, redirect, render_template, session, escape, url_for, Response
 from drst.blueprint import drst
 import hashlib
-import random
-import string
-#세션에 이메일, 친구코드
-def random_string(length, letters):
-    return ''.join(random.choice(letters) for i in range(length))
-
 
 @drst.route("/")
 def page_index():
