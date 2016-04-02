@@ -25,5 +25,4 @@ def page_index():
          group_url = group_url).all()
         '''
         groups2 = group_members.Group_members.query.filter_by(friend_code=session['friend_code']).join(groups.Groups).filter_by(group_url = groups.Groups.group_url).all()
-        print(groups2[0].group_url)
     return render_template('index.html', user=user, isLogin=isLogin, groups=groups2)
