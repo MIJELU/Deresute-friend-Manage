@@ -6,6 +6,7 @@ import hashlib
 def page_index():
     isLogin = False
     user = {}
+    groups2 = {}
     targetGroup = request.args.get("targetGroupssid")
     if(targetGroup):
         print("타겟의등록" + targetGroup)

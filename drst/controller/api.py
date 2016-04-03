@@ -8,6 +8,80 @@ import os.path
 import datetime
 import urllib.request
 
+def check_friend_code(eval_friend_code):
+    from drst.database import db
+    from drst.model import friend_code_cache
+
+    result = False
+    statusCode = 200
+    mimeType = "application/json"
+    friend_info = db.session.query(friend_code_cache.Friend_code_cache).\
+            filter_by(friend_code = eval_friend_code).first()
+    now = datetime.datetime.now()
+    diff = 0.0
+    if last_modified in friend_info :
+        diff = (now - firend_info.last_modified).total_seconds / 86400
+    if friend_info is None or  diff > 3.0:
+        print("Retrieving Frome deresute.me ...")
+        req = Request("https://deresute.me/"+ str(eval_friend_code) +"/json")
+        try:
+            response = urlopen(req)
+        except HTTPError as e:
+            return "Error"
+        except URLError as e:
+            return "Error"
+        encoding = response.info().get_content_charset('utf8')
+        data = json.loads(response.read().decode(encoding))
+        if(friend_info is None) :
+            post = friend_code_cache.Friend_code_cache(data['id'],\
+            data['name'], data['level'], data['prp'], data['comment'], now)
+            db.session.add(post)
+        else if(api_error not in data):
+            friend_info.name = data['name']
+            friend_info.level = data['level']
+            friend_info.prp = data['prp']
+            friend_info.comment = data['comment']
+            friend_info.last_modified = now #마지막 캐시시간 바꿈
+        else:
+            #api error
+            if (friend_info is None) :
+                #실패정보를 db에 집어넣음
+                post = friend_code_cache.Friend_code_cache(eval_friend_code,\
+                "", 0, 0, "", now)
+                post.isValid = False #실험적 코드
+                db.session.add(post)
+            else :
+                #실패정보로 업데이트
+                friend_info.isValid = False
+                friend_info.last_modified = now
+            db.session.commit()
+            resp = Response(response=json.dumps(\
+            {'isValid': result, 'last_modified': 0.0})\
+            , status=statusCode, mimetype=mimeType)
+            return resp
+
+        urllib.request.urlretrieve("https://deresute.me/"+str(data['id'])\
+                +"/medium", "drst/static/i/user/"+str(data['id'])+".png")
+        db.session.commit()
+
+    return True
+
+@drst.route('/api/v1.2/smartLogin/<string:friend_or_email>')
+def api_smart_login(friend_or_email):
+    '''
+    0. 이메일인지 친구코드인지 기타 이상한 값인지 체크
+        이메일 : 이미 가입된 회원인지 조회
+            이미 가입된 회원이면 비밀번호와 체크하여 조건에 맞으면 로그인 세션 주입
+        친구코드 : 이미 가입된 회원인지, 가입안된 회원인지 조회
+            이미 가입된 회원이면 비밀번호와 체크하여, 혹은 비밀번호가 있는지 확인하여 로그인 세션 주입
+            가입되지 않은 회원이면 일단 db에 넣은 뒤에 로그인 세션 주입(임시회원)
+        기타 (유효하지 않은 값): 불능처리
+        외부 api 요청 남발을 방지하기 위해 캐시를 둔다. 성공한 요청이든 실패한 요청이든 캐시에 넣어둔다
+        캐시에 넣어둔 지 세(3) 시간이 넘은 데이터를 재 조회시 다시 긁어온다.
+    '''
+
+    return "유저의 로그인"
+
 @drst.route("/api/v1.1/producer/<string:friend_code>" ,methods=['GET'])
 def api_get_producer_status(friend_code):
     '''타입 : 이미지와 json
