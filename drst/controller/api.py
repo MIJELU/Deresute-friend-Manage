@@ -8,7 +8,40 @@ import os.path
 import datetime
 import urllib.request
 
+@drst.route('/api/v1.2/test')
+def testApi():
+    is_cached_user('ynifamily3@gmail.com')
+    return "A"
+
+def is_cached_user(eval_friend_or_email):
+    #cached : True
+    #Not cached || old (3 hours ago) : False
+    from drst.database import db
+    from drst.model import friend_code_cache
+    from drst.model import members
+    inVal = eval_friend_or_email
+    if inVal is not None:
+        inVal = inVal.strip()
+
+    #email validate
+    if validate_email(inVal):
+        #email ->
+        member_info = db.session.query(friend_code_cache.Friend_code_cache).\
+        filter_by(email = inVal).first()
+        if(member_info is None):
+            return False
+        else:
+            return True
+
+    #code validate
+
+
+
+    return False
+
 def check_friend_code(eval_friend_code):
+    return True
+    '''
     from drst.database import db
     from drst.model import friend_code_cache
 
@@ -64,7 +97,7 @@ def check_friend_code(eval_friend_code):
                 +"/medium", "drst/static/i/user/"+str(data['id'])+".png")
         db.session.commit()
 
-    return True
+    return True'''
 
 @drst.route('/api/v1.2/smartLogin/<string:friend_or_email>')
 def api_smart_login(friend_or_email):
