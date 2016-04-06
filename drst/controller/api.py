@@ -10,8 +10,10 @@ import urllib.request
 
 @drst.route('/api/v1.2/test')
 def testApi():
-    print(is_cached_user('201294508'))
-    return "A"
+    if(is_cached_user(request.args.get('u').strip())):
+        return "캐시됨"
+    else:
+        return "캐시안됨"
 
 def is_cached_user(eval_friend_or_email):
     #cached : True
@@ -36,9 +38,7 @@ def is_cached_user(eval_friend_or_email):
             member_info = db.session.query(friend_code_cache.Friend_code_cache).\
             filter_by(friend_code = member_info.friend_code).first()#reallocation
             now = datetime.datetime.now()
-            print(now)
-            print(member_info.last_modified)
-            diff = (now - member_info.last_modified).total_seconds() / 86400
+            diff = (now - member_info.last_modified).total_seconds() / (3600*3)
             if (diff > 3.0):
                 return False
             else:
@@ -64,8 +64,42 @@ def is_cached_user(eval_friend_or_email):
             return True
     return False
 
+def cache_user(eval_friend_or_email):
+    #유저를 (재)캐시한다. (내부적으로 시간체크 모듈이 있다. 아무렇게나 호출해도 서버부하에 무방)
+    print('재캐시')
+    if (is_cached_user(eval_friend_or_email)):
+        return
+    #deresute me 에 요청하기 전에 failure List 확인
+    return
+
+
 def check_friend_code(eval_friend_code):
-    return True
+    #회원가입 여부와는 상관없이 정당한 친구코드인지를 알아보자
+    #캐시되었으면 옳다.
+    #캐시되지 않았을 경우, 기본 체크(9글자 정수)를 하고 난 뒤 deresute.me에 요청을 보낸다
+    #cache데이터베이스에 갱신한다. 그리고 이것이 옳은 결과인지를 리턴한다 (T, F)
+    from drst.database import db
+    from drst.model import friend_code_cache
+    from drst.model import members
+    #기본적인 유효성 검증
+    inVal = eval_friend_or_email
+    if inVal is not None:
+        inVal = inVal.strip()
+    else:
+        return False
+    if (is_cached_user(inVal)):
+        return True
+    if(len(inVal) != 9) :
+        return False
+    try:
+        test99 = int(inVal)
+    except ValueError:
+        return False
+
+    #캐시되지 않은 코드에 대하여 deresute.me 에 요청을 보낸다.
+    #이 요청 보내기 전에 꼭 failure List 확인 후 3시간 이하의 요청에 대해서는 무시한다.
+    #요청해서 api_error 같은거 뜨면 failure List를 갱신하거나 등록한다.
+    #요청했는데 있으면 캐시뜬다. 그리고 failure List에서 제거한다.(있다면, 확률 매우 낮음)
     '''
     from drst.database import db
     from drst.model import friend_code_cache
@@ -123,6 +157,12 @@ def check_friend_code(eval_friend_code):
         db.session.commit()
 
     return True'''
+
+
+
+@drst.route('/api/v1.2/producer/<string:friend_code>')
+def api_get_producer_status_v2(friend_code):
+    return "producer Info Picture / JSON"
 
 @drst.route('/api/v1.2/smartLogin/<string:friend_or_email>')
 def api_smart_login(friend_or_email):
@@ -230,11 +270,6 @@ def api_checkJoin():
                             status=200,
                             mimetype="application/json")
     return resp
-
-
-
-
-
 
 @drst.route("/api/v1.1/checkValidValue", methods=['POST'])
 def api_checkMember():

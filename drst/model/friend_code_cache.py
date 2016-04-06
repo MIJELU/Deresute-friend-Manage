@@ -5,7 +5,6 @@ class Friend_code_cache(db.Model):
     __tablename__ = "friend_code_cache"
 
     friend_code = db.Column(db.String(9), primary_key=True)
-    isValid = db.Column(db.Boolean, default=True) #유효한 친구코드인지 체크 (API 1.2 추가)
     name = db.Column(db.String(256))
     level = db.Column(db.Integer)
     prp = db.Column(db.Integer)
