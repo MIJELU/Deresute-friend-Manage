@@ -16,27 +16,50 @@ def testApi():
 def is_cached_user(eval_friend_or_email):
     #cached : True
     #Not cached || old (3 hours ago) : False
+    #3시간 초과인 경우에는 캐시되지 않은 것으로 간주한다 (추가)
     from drst.database import db
     from drst.model import friend_code_cache
     from drst.model import members
     inVal = eval_friend_or_email
     if inVal is not None:
         inVal = inVal.strip()
+    else:
+        return False
 
     #email validate
     if validate_email(inVal):
-        #email ->
-        member_info = db.session.query(friend_code_cache.Friend_code_cache).\
+        #email -> 진짜 회원인 경우에만 있을 것이다. 회원 정보 테이블에서 해당하는 코드
+        #불러오고 그게 캐시되었는지 본다. (last_modified 비교 필요)
+        member_info = db.session.query(members.Members).\
         filter_by(email = inVal).first()
-        if(member_info is None):
+        if(member_info):
+            member_info = db.session.query(friend_code_cache.Friend_code_cache).\
+            filter_by(friend_code = member_info.friend_code).first()#reallocation
+            now = datetime.datetime.now()
+            diff = (now - member_info.last_modified).total_seconds / 86400
+            if (diff > 3.0):
+                return False
+            else:
+                return True
+        else:
+            return False
+
+    #code validate
+    if(len(inVal) != 9) :
+        return False
+    try:
+        test99 = int(inVal)
+    except ValueError:
+        return False
+    member_info = db.session.query(friend_code_cache.Friend_code_cache).\
+    filter_by(friend_code = inVal).first()
+    if(member_info):
+        now = datetime.datetime.now()
+        diff = (now - member_info.last_modified).total_seconds / 86400
+        if (diff > 3.0):
             return False
         else:
             return True
-
-    #code validate
-
-
-
     return False
 
 def check_friend_code(eval_friend_code):
