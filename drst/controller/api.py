@@ -10,7 +10,7 @@ import urllib.request
 
 @drst.route('/api/v1.2/test')
 def testApi():
-    is_cached_user('ynifamily3@gmail.com')
+    print(is_cached_user('201294508'))
     return "A"
 
 def is_cached_user(eval_friend_or_email):
@@ -36,7 +36,9 @@ def is_cached_user(eval_friend_or_email):
             member_info = db.session.query(friend_code_cache.Friend_code_cache).\
             filter_by(friend_code = member_info.friend_code).first()#reallocation
             now = datetime.datetime.now()
-            diff = (now - member_info.last_modified).total_seconds / 86400
+            print(now)
+            print(member_info.last_modified)
+            diff = (now - member_info.last_modified).total_seconds() / 86400
             if (diff > 3.0):
                 return False
             else:
@@ -55,7 +57,7 @@ def is_cached_user(eval_friend_or_email):
     filter_by(friend_code = inVal).first()
     if(member_info):
         now = datetime.datetime.now()
-        diff = (now - member_info.last_modified).total_seconds / 86400
+        diff = (now - member_info.last_modified).total_seconds() / 86400
         if (diff > 3.0):
             return False
         else:
