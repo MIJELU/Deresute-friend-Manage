@@ -4,7 +4,8 @@ from drst.database import db
 class Members(db.Model):
     __tablename__ = "members"
 
-    email = db.Column(db.String(128), primary_key=True)
+    nid = db.Column(db.Integer, primary_key=True,autoincrement=True)
+    email = db.Column(db.String(128))
     password = db.Column(db.String(64))
     friend_code = db.Column(db.String(9), db.ForeignKey('group_members.friend_code'))
 
