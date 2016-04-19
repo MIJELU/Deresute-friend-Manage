@@ -2,7 +2,7 @@ from drst import create_app
 import sys
 
 app = create_app()
-sv = "public"
+sv = "test"
 
 
 
