@@ -115,7 +115,7 @@ def page_join():
             response = ""
             isValid = True
             print("리소스 접근")
-            req = Request("https://deresute.me/"+ friend_code +"/json")
+            req = Request("https://deresute.me/"+ str(friend_code) +"/json")
             try:
                 response = urlopen(req)
             except HTTPError as e:
