@@ -1,8 +1,11 @@
 from flask import request, redirect, render_template, session, escape, url_for, Response
 from drst.blueprint import drst
 import hashlib
-
 @drst.route("/")
+def page_introduce():
+    return render_template('introduce.html')
+    
+@drst.route("/start")
 def page_index():
     isLogin = False
     user = {}
